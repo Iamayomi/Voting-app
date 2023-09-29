@@ -1,43 +1,35 @@
-const sendEmail = require('./../util/email');
-const Email = require('./../models/emailModel');
-const Voter = require('./../models/voteModels');
+const User = require('../models/userModels');
 
-// exports.signup = (req, res) => {
-//     res.status(201).json({
-//         message: "Success"
-//     });
-// };
-
-exports.emailSubscriber = async function (req, res) {
+exports.getAllUser = async function(req, res, next){
     try {
+          const getAllUser = await User.find();
 
-        await Email.create({ email: req.body.email });
-
-        const { email } = await Email.find();
-
-        const totalVote = await Voter.aggregate([
-            {
-                $group: {
-                    _id: '$party',
-                    totalVote: { $count: {} }
-                }
-            }]);
-
-        await sendEmail({
-            email: email,
-            subject: "Total vote count update",
-            text: `total vote for party ${totalVote}`
+          res.status(200).json({
+          status: "Success",
+          AllUser: getAllUser.length,
+          data: {
+             users: getAllUser
+           }
         })
-
-        res.status(200).json({
-            status: "success",
-            message: "Vote result successfully sent to the subscriber"
-        })
-    } catch (err) {
-        res.status(401).json({
-            status: "fail",
-            Message: err
-        })
+    } catch(error){
+        return next(res.status(401).send(error.message));
     }
 };
 
+
+exports.getAUser = async function(req, res, next){
+    try {
+          const getAUser = await User.findById(req.params.id);
+          console.log(getAUser);
+
+          res.status(200).json({
+          status: "Success",
+          data: {
+             getAUser
+           }
+        })
+          
+    } catch(error){
+        return next(res.status(401).send(error.message));
+    }
+};

@@ -2,6 +2,8 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModels');
 const { promisify } = require('util');
+const sendMail = require('./../util/email')
+
 
 exports.signup = async function (req, res, next) {
     try {
@@ -17,19 +19,22 @@ exports.signup = async function (req, res, next) {
             expiresIn: process.env.JWT_EXPIRES_IN
         });
 
+        // This only work in production
+        res.cookie('jwt', token, {
+            expires: new Date(Date.now() + process.env.JWT_COOKIES_EXPIRES_IN * 24 * 60 * 60 * 1000),
+            secure: true,
+            httpOnly: true
+        });
+
         res.status(201).json({
             status: "Success",
             token,
             data: {
                 user: newUser
             }
-        }
-        )
-    } catch (error) {
-        res.status(400).json({
-            status: "fail",
-            message: error
         })
+    } catch (error) {
+        res.status(400).send(error.message);
 
     };
 };
@@ -53,20 +58,22 @@ exports.signin = async function (req, res, next) {
             expiresIn: process.env.JWT_EXPIRES_IN
         });
 
+        res.cookie('jwt', token, {
+            expires: new Date(Date.now() + process.env.JWT_COOKIES_EXPIRES_IN * 24 * 60 * 60 * 1000),
+            secure: true,
+            httpOnly: true
+        });
+
         res.status(200).json({
             status: 'success',
             token
         })
 
     } catch (error) {
-        res.status(401).json({
-            status: "fail",
-            message: error
-        })
+        res.status(401).send(error.message);
     }
 
 };
-
 
 
 exports.protect = async function (req, res, next) {
@@ -97,7 +104,7 @@ exports.protect = async function (req, res, next) {
     };
 
     if (currentUser.checkPasswordChangedAt(decoded.iat)) {
-    next(res.status(401).send('User recently changed password! please log in again.'));
+        next(res.status(401).send('User recently changed password! please log in again.'));
     }
 
     req.user = currentUser;
@@ -121,43 +128,37 @@ exports.forgetPassword = async function (req, res, next) {
     and confirmPassword to: ${resetURL}.\nIf you didn't forget your password, please ignore
     this email`;
 
+    try {
+        await sendMail({
+            from: 'Votting app <hello@gmail.com>',
+            to: user.email,
+            subject: "your password expired in 10mins",
+            text: message
+        });
+
         res.status(200).json({
-          status: 'success',
-          resetToken
-       })
+            status: 'success',
+            message: 'Token sent to sendEmail'
+        })
 
-   // try {
-   //      await sendEmail({
-   //        email: user.email,
-   //        subject: 'Your password reset token valid for 3 min',
-   //        message
-   //     })
-
-   //      res.status(200).json({
-   //        status: 'success',
-   //        message: 'Token sent to sendEmail'
-   //     })
-        
-   //  } catch(err){
-   //      user.passwordResetToken = undefined;
-   //      user.passwordResetExpires = undefined;
-   //      await user.save({ validateBeforeSave: false });
-
-   //      return next(res.status(500).send('There was an error sending the email. Try again later!'));
-   //  }
-
+    } catch (err) {
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save({ validateBeforeSave: false });
+        return next(res.status(500).send('There was an error sending the email. Try again later!'));
+    }
 };
 
-exports.resetPassword = async function(req, res, next) {
+exports.resetPassword = async function (req, res, next) {
     const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
-    
-    const user = await User.findOne({ 
+
+    const user = await User.findOne({
         passwordResetToken: hashedToken,
         passwordResetExpires: { $gt: Date.now() }
-     });
+    });
 
     if (!user) {
-         return next(res.status(400).send('Time has expired'));
+        return next(res.status(400).send(error.details[0].message));
     }
 
     user.password = req.body.password;
@@ -167,9 +168,14 @@ exports.resetPassword = async function(req, res, next) {
     await user.save();
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-            expiresIn: process.env.JWT_EXPIRES_IN
+        expiresIn: process.env.JWT_EXPIRES_IN
     });
 
+    res.cookie('jwt', token, {
+        expires: new Date(Date.now() + process.env.JWT_COOKIES_EXPIRES_IN * 24 * 60 * 60 * 1000),
+        secure: true,
+        httpOnly: true
+    });
 
     res.status(200).json({
         status: "Success",
@@ -186,8 +192,6 @@ exports.toRestrict = async function (roles) {
     };
 
 };
-
-
 
 
 

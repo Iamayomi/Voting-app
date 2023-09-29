@@ -1,8 +1,9 @@
 const nodemailer = require('nodemailer');
 
-const sendEmail = async (options) => {
+const sendEmail = async options => {
 
-    const transport = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
         host: process.env.EMAIL_HOST,
         port: process.env.EMAIL_PORT,
         auth: {
@@ -12,13 +13,18 @@ const sendEmail = async (options) => {
     });
 
     const mailOptions = {
-        from: 'Voting app <hello@email.com>',
+        from: 'Voting app <hello@gmail.com>',
         to: options.email,
         subject: options.subject,
         text: options.text
     }
 
-    await transport.sendMail(mailOptions);
+
+    transporter.sendMail(mailOptions, function (err, data) {
+        if (err) console.log('Error Occur', err);
+        else console.log('Email sent', data);
+
+    });
 };
 
 

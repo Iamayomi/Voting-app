@@ -1,78 +1,67 @@
 [
     {
-        "id": 0,
         "party": "APC",
         "voteFor": "Bola Ahmmad Tinubu",
         "password": "ayomide989"
     },
     {
-        "id": 1,
         "party": "LP",
-        "vote-for": "Peter Obi",
+        "voteFor": "Peter Obi",
         "password": "ayomide1989"
     },
     {
-        "id": 2,
         "party": "LP",
-        "vote-for": "Peter Obi",
+        "voteFor": "Peter Obi",
         "password": "ayomide198"
     },
     {
-        "id": 3,
         "party": "APC",
-        "vote-for": "Bola Ahmmad Tinubu",
+        "voteFor": "Bola Ahmmad Tinubu",
         "password": "ayomide19988"
     },
     {
-        "id": 4,
         "party": "APC",
-        "vote-for": "Bola Ahmmad Tinubu",
+        "voteFor": "Bola Ahmmad Tinubu",
         "password": "ayomide18"
     },
     {
-        "id": 5,
         "party": "APC",
-        "vote-for": "Bola Ahmmad Tinubu",
+        "voteFor": "Bola Ahmmad Tinubu",
         "password": "ayomide178"
     },
     {
-        "id": 6,
         "party": "APC",
-        "vote-for": "Bola Ahmmad Tinubu",
+        "voteFor": "Bola Ahmmad Tinubu",
         "password": "ayomide08"
     },
     {
-        "id": 7,
         "party": "LP",
-        "vote-for": "Peter Obi",
+        "voteFor": "Peter Obi",
         "password": "ayomide008"
     },
     {
-        "id": 8,
         "party": "APC",
-        "vote-for": "Bola Ahmmad Tinubu",
+        "voteFor": "Bola Ahmmad Tinubu",
         "password": "ayomide1008"
     },
     {
         "party": "LP",
-        "vote-for": "Peter Obi",
+        "voteFor": "Peter Obi",
         "password": "ayomide10018"
     },
     {
         "party": "APC",
-        "vote-for": "Bola Ahmmad Tinubu",
+        "voteFor": "Bola Ahmmad Tinubu",
         "password": "ayomide10918"
     },
     {
-        "id": 11,
         "party": "LP",
-        "vote-for": "Peter Obi",
+        "voteFor": "Peter Obi",
         "password": "ayomide918"
     },
     {
-        "id": 12,
         "party": "APC",
-        "vote-for": "Bola Ahmmad Tinubu",
+        "voteFor": "Bola Ahmmad Tinubu",
         "password": "ayomide118"
     }
 ]

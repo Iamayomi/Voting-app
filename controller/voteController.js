@@ -6,11 +6,10 @@ const { promisify } = require('util');
 const User = require('../models/userModels');
 const Voter = require('../models/voteModels');
 
-// const reviewVote = JSON.parse(
-//     fs.readFileSync('../voter-data/vote-review.json', 'utf8')
-// );
 
-exports.checkVote = async (req, res, next) => {
+
+
+exports.createVote = async (req, res, next) => {
     try {
         let token;
         if (req.headers.authorization?.startsWith('Bearer'))
@@ -18,7 +17,7 @@ exports.checkVote = async (req, res, next) => {
 
         const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-        const currentUser = await User.findById(decoded.id);
+        const currentUser = await User.findById(decoded.id).select('+password');
 
         const newVoter = req.body;
 
@@ -39,12 +38,13 @@ exports.checkVote = async (req, res, next) => {
 
         newVoter.password = undefined;
 
-        const voter = await Voter.create(newVoter);
+        const votes = await Voter.create(newVoter);
+        console.log(votes)
 
         res.status(200).json({
             status: "success",
             voter: {
-                data: newVoter
+                data: votes
             }
         })
 
@@ -84,21 +84,35 @@ exports.updateVote = async function (req, res, next) {
 };
 
 
-exports.getAllVoter = async function (req, res) {
+exports.getAllVoter = async function(req, res, next){
     try {
-        const allVoter = await Voter.find();
+          const getAllVoters = await Voter.find();
+
+          res.status(200).json({
+          status: "Success",
+          AllVoters: getAllVoters.length,
+          data: {
+             voters: getAllVoters
+           }
+        })
+    } catch(error){
+        return next(res.status(401).send(error.message));
+    }
+};
+
+exports.getAVoter = async function (req, res) {
+    try {
+        const aVoter = await Voter.findById(req.params.id).select("-__v");
+
+
         res.status(200).json({
             status: "success",
-            totalVote: allVoter.length,
-            voters: {
-                data: allVoter
+            vote: {
+                aVoter
             }
         })
     } catch (err) {
-        res.status(401).json({
-            status: "fail",
-            Message: "No voter Found!!"
-        })
+        res.status(401).send(err.message);
     }
 };
 

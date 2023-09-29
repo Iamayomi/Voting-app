@@ -1,18 +1,25 @@
 const voteController = require('../controller/voteController');
-// const authController = require('../controller/voterController');
+const pollController = require('../controller/pollController');
 
 const express = require('express');
 const router = express.Router();
 
 router
-    .get('/Home', voteController.updateVote);
+    .get('/voteReview', voteController.updateVote);
 
 router
-    .route('/voting')
-    .post(voteController.checkVote);
+    .get('/Home', pollController.activePoll);
 
 router
-    .route('/voters')
+    .route('/votting')
+    .post(voteController.createVote);
+
+router
+    .route('/getVote/:id')
+    .get(voteController.getAVoter);
+
+router
+    .route('/votters')
     .get(voteController.getAllVoter);
 
 router

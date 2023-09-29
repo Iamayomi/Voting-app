@@ -23,14 +23,14 @@ const userModel = new Schema({
 
     role: {
         type: String,
-        enum: ['amin', 'user'],
-        default: 'user'
+        enum: ['admin', 'user']
     },
 
     password: {
         type: String,
         required: [true, "Please provide a password"],
-        min: [8, "password must be at least 6"]
+        min: [8, "password must be at least 6"],
+        select: false
     },
 
     confirmPassword: {
@@ -64,6 +64,12 @@ userModel.pre('save', async function (next) {
     next();
 });
 
+userModel.pre('save', async function (next) {
+
+    this.role === "user" ? "user" : "admin";
+
+    next();
+});
 
 userModel.methods.comparePassword = function (signinPassword, userPassword) {
     return bcrypt.compare(signinPassword, userPassword);
@@ -80,6 +86,7 @@ userModel.methods.createPasswordResetToken = function () {
     return resetToken;
 
 };
+
 
 userModel.methods.checkPasswordChangedAt = function (JWTTimestamp) {
     if (this.passwordChangedAt) {

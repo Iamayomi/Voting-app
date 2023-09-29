@@ -8,7 +8,7 @@ const subscriberModel = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('emailSubscriber', subscriberModel);
+module.exports = mongoose.model('Subscriber', subscriberModel);
 
 
 
