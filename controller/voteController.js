@@ -117,22 +117,22 @@ exports.getAVoter = async function (req, res) {
 };
 
 
-exports.clearAllVoter = async function (req, res) {
-    try {
-        await Voter.deleteMany();
-        res.status(200).json({
-            status: "success",
-            voters: {
-                data: null
-            }
-        })
-    } catch (err) {
-        res.status(401).json({
-            status: "fail",
-            Message: err
-        })
-    }
-};
+// exports.clearAllVoter = async function (req, res) {
+//     try {
+//         await Voter.deleteMany();
+//         res.status(200).json({
+//             status: "success",
+//             voters: {
+//                 data: null
+//             }
+//         })
+//     } catch (err) {
+//         res.status(401).json({
+//             status: "fail",
+//             Message: err
+//         })
+//     }
+// };
 
 
 

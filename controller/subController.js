@@ -22,7 +22,7 @@ exports.subscriber = async function (req, res) {
             }
         }])
 
-    try {
+      try {
         await sendEmail({
             email: email,
             subject: "Total vote count update",
@@ -33,6 +33,7 @@ exports.subscriber = async function (req, res) {
             status: "success",
             message: "Vote result successfully sent to the subscriber"
         })
+
     } catch (err) {
         res.status(401).json({
             status: "fail",

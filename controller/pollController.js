@@ -69,9 +69,7 @@ exports.activePoll = async function(req, res, next){
             data: activePoll
           }
        })
-    }catch(error){
+    } catch(error){
         next(res.status(401).send(error.message));
     }
-
-    
 };
