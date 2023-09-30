@@ -23,7 +23,8 @@ const userModel = new Schema({
 
     role: {
         type: String,
-        enum: ['admin', 'user']
+        enum: ['admin', 'user'],
+        default: "user" ? "user" : "admin" 
     },
 
     password: {
@@ -65,9 +66,7 @@ userModel.pre('save', async function (next) {
 });
 
 userModel.pre('save', async function (next) {
-
-    this.role === "user" ? "user" : "admin";
-
+   if (this.role === "admin") return this.default('role') == "admin";
     next();
 });
 
